@@ -20,19 +20,19 @@ func AddEntry(c *gin.Context) {
 }
 
 func GetEntries(c *gin.Context) {
-	var ctx, cancel = context.WithTimeout(context.Background()), 100*time.Second)
+	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 
 	var entries []bson.M
 	cursor, err := entryCollection.Find(ctx, bson.M{}) // Get all
 
 	if err != nil {
-		c.JSON(http.StatusInternalServer, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		fmt.Println(err)
 		return
 	}
 
 	if err = cursor.All(ctx, &entries); err != nil {
-		c.JSON(http.StatusInternalServer, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		fmt.Println(err)
 		return
 	}
@@ -63,7 +63,7 @@ func DeleteEntry(c *gin.Context) {
 	result, err := entryCollection.DeleteOne(ctx, bson.M{"_id": docID})
 
 	if err != nil {
-		c.JSON(http.StatusInternalServer, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		fmt.Println(err)
 		return
 	}
